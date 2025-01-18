@@ -13,6 +13,7 @@ __pycache__/
 *.tif
 *.nc
 *.parquet
+*.txt
 
 private/
 .Python
