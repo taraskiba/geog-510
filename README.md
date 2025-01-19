@@ -35,3 +35,7 @@ You can freely access all [course materials](https://geog-510.gishub.org) and [l
 [Enroll Now](https://tiny.utk.edu/geosoft-design)
 
 [![Geographic Software Design](https://assets.gishub.org/images/geosoft-design.webp)](https://tiny.utk.edu/geosoft-design)
+
+## Lecture Videos
+
+The complete lecture series is available as a YouTube playlist: <https://bit.ly/geosoft-design>. Lecture videos will be added weekly as the course progresses in Spring 2025.
