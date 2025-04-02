@@ -101,17 +101,40 @@ m
 Choropleth maps visualize geographic data distributions.
 
 ```{code-cell} ipython3
-from ipyleaflet import Choropleth
-import pandas as pd
+import os
+import json
+import random
+import requests
 
-# Example data
-geojson_url = (
-    "https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json"
+from ipyleaflet import Map, GeoJSON
+
+if not os.path.exists("europe_110.geo.json"):
+    url = "https://github.com/jupyter-widgets/ipyleaflet/raw/master/examples/europe_110.geo.json"
+    r = requests.get(url)
+    with open("europe_110.geo.json", "w") as f:
+        f.write(r.content.decode("utf-8"))
+
+with open("europe_110.geo.json", "r") as f:
+    data = json.load(f)
+
+
+def random_color(feature):
+    return {
+        "color": "black",
+        "fillColor": random.choice(["red", "yellow", "green", "orange"]),
+    }
+
+
+m = Map(center=(50.6252978589571, 0.34580993652344), zoom=3)
+
+geo_json = GeoJSON(
+    data=data,
+    style={"opacity": 1, "dashArray": "9", "fillOpacity": 0.1, "weight": 1},
+    hover_style={"color": "white", "dashArray": "0", "fillOpacity": 0.5},
+    style_callback=random_color,
 )
-data = {"USA": 100, "CAN": 50, "MEX": 75}
+m.add(geo_json)
 
-choro = Choropleth(geo_data=geojson_url, choro_data=data, key_on="id")
-m.add_layer(choro)
 m
 ```
 
@@ -140,6 +163,102 @@ def zoom_change(change):
 
 zoom_slider.observe(zoom_change, "value")
 zoom_slider
+```
+
+## 9. Adding an image overlay
+
+```{code-cell} ipython3
+from ipyleaflet import Map, ImageOverlay
+```
+
+```{code-cell} ipython3
+m = Map(center=(25, -115), zoom=4)
+
+image = ImageOverlay(
+    url="https://i.imgur.com/06Q1fSz.png",
+    # url='../06Q1fSz.png',
+    bounds=((13, -130), (32, -100))
+)
+
+m.add(image)
+m
+```
+
+```{code-cell} ipython3
+m = Map(center=(24, 115), zoom=4)
+
+image = ImageOverlay(
+    url="https://i.gifer.com/4j.gif",
+    bounds=((13, 100), (45, 130))
+)
+
+m.add(image)
+m
+```
+
+## 10. Adding a video overlay
+
+```{code-cell} ipython3
+from ipyleaflet import Map, VideoOverlay
+```
+
+```{code-cell} ipython3
+m = Map(center=(25, -115), zoom=4)
+
+video = VideoOverlay(
+    url="https://www.mapbox.com/bites/00188/patricia_nasa.webm",
+    bounds=((13, -130), (32, -100))
+)
+
+m.add(video)
+m
+```
+
+```{code-cell} ipython3
+m = Map(center=(37.562984, -122.514426), zoom=17)
+
+video = VideoOverlay(
+    url="https://static-assets.mapbox.com/mapbox-gl-js/drone.mp4",
+    bounds=((37.56238816, -122.515963), (37.563391708, -122.5130939)),
+)
+m.add(video)
+m
+```
+
+## 11. Adding WMS layers
+
+```{code-cell} ipython3
+from ipyleaflet import Map, WMSLayer, basemaps
+```
+
+```{code-cell} ipython3
+wms = WMSLayer(
+    url='http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi',
+    layers='nexrad-n0r-900913',
+    format='image/png',
+    transparent=True,
+    attribution='Weather data © 2012 IEM Nexrad'
+)
+
+m = Map(basemap=basemaps.CartoDB.Positron, center=(38.491, -95.712), zoom=4)
+m.add(wms)
+m
+```
+
+https://apps.nationalmap.gov/services/
+
+```{code-cell} ipython3
+wms = WMSLayer(
+    url='https://imagery.nationalmap.gov/arcgis/services/USGSNAIPPlus/ImageServer/WMSServer?',
+    layers='USGSNAIPPlus:NaturalColor',
+    format='image/png',
+    transparent=True,
+    attribution='USGS'
+)
+
+m = Map(basemap=basemaps.CartoDB.Positron, center=(38.491, -95.712), zoom=4)
+m.add(wms)
+m
 ```
 
 ## Summary
